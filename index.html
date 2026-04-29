@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <title>Aquarich Invoice</title>
+    <style>
+        body {
+            font-family: 'Khmer OS Battambang', Arial, sans-serif;
+            background: #525659;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .no-print { position: fixed; top: 10px; left: 10px; z-index: 100; padding: 10px 20px; cursor: pointer; }
+        .invoice-container {
+            width: 210mm;
+            background: white;
+            padding: 15mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            font-size: 12px;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER SECTION */
+        .header-section { display: flex; align-items: flex-start; margin-bottom: 5px; }
+        .logo-box { width: 20%; text-align: left; }
+        .logo-box img { width: 130px; height: auto; }
+        
+        /* Fixed: Increased width and removed large padding to keep VAT on one line */
+        .company-info { width: 80%; text-align: center; padding-right: 0px; }
+        
+        .co-name-kh { font-size: 18px; font-weight: bold; margin-bottom: 2px; }
+        .co-name-en { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        
+        /* VAT Row Styling */
+        .vat-row { font-weight: bold; margin-bottom: 8px; font-size: 13px; white-space: nowrap; }
+        .vat-box { border: 1px solid #000; padding: 0 3px; margin: 0 1px; display: inline-block; min-width: 12px; text-align: center; }
+        
+        .address-header { font-size: 11px; font-weight: bold; line-height: 1.4; }
+
+        .blue-divider { border-bottom: 2px solid #1f4e78; margin: 10px 0; }
+        .invoice-title { text-align: center; font-weight: bold; margin: 15px 0; }
+
+        /* CUSTOMER META INFO */
+        .meta-container { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; margin-bottom: 15px; }
+        .row { display: flex; align-items: flex-end; margin-bottom: 10px; }
+        .label-block { display: flex; flex-direction: column; line-height: 1.2; margin-right: 8px; font-weight: bold; }
+        .value-line { flex-grow: 1; border-bottom: 1.5px dotted #000; min-height: 18px; padding-left: 5px; outline: none; }
+
+        /* TABLE STYLING */
+        .invoice-table { width: 100%; border-collapse: collapse; margin-top: 10px; border: 1.5px solid #1f4e78; }
+        .invoice-table th, .invoice-table td { border: 1px solid #1f4e78; padding: 8px; text-align: center; }
+        .invoice-table th { font-size: 11px; font-weight: bold; color: #000; }
+        .desc-cell { height: 180px; vertical-align: middle; text-align: center; font-size: 14px; }
+        
+        /* TOTALS */
+        .bottom-row-container { display: flex; border: 1.5px solid #1f4e78; border-top: none; }
+        .bank-info-cell { width: 50.8%; padding: 10px; text-align: left; line-height: 1.6; font-weight: bold; }
+        .totals-column { width: 49.2%; border-left: 1px solid #1f4e78; }
+        .total-item { display: flex; border-bottom: 1px solid #1f4e78; min-height: 45px; }
+        .total-item:last-child { border-bottom: none; background-color: #f2f2f2; }
+        .total-label { width: 66.5%; padding: 5px 10px; border-right: 1px solid #1f4e78; display: flex; flex-direction: column; justify-content: center; font-weight: bold; font-size: 11px; }
+        .total-value { width: 33.5%; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 12px; }
+        .rate-flex { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+
+        /* SIGNATURES */
+        .signature-section { display: flex; justify-content: space-around; margin-top: 50px; margin-bottom: 40px; }
+        .sig-block { width: 250px; text-align: center; }
+        .sig-line { border-top: 1.2px solid #000; width: 100%; margin-bottom: 8px; }
+
+        /* FOOTER CONTACT INFO */
+        .footer-info-container { margin-top: auto; border-top: 2px solid #1f4e78; padding-top: 15px; }
+        .footer-row { display: flex; justify-content: space-between; align-items: flex-start; font-family: Arial, sans-serif; font-size: 13px; }
+        .footer-left { width: 60%; display: flex; align-items: flex-start; gap: 10px; }
+        .footer-right { width: 35%; display: flex; flex-direction: column; gap: 8px; }
+        .contact-item { display: flex; align-items: center; gap: 10px; text-decoration: none; color: black; }
+        
+        @media print { .no-print { display: none; } .invoice-container { box-shadow: none; margin: 0; } body { background: white; padding: 0; } }
+    </style>
+</head>
+<body>
+
+    <button class="no-print" onclick="window.print()">Print / Save PDF</button>
+
+    <div class="invoice-container">
+        <div class="header-section">
+            <div class="logo-box"><img src="Aquarich.png" alt="Logo"></div>
+            <div class="company-info">
+                <div class="co-name-kh">ក្រុមហ៊ុនអាហ្វ័ររីច ប្រស្នើរិធី ផាតន័រ ឯ.ក</div>
+                <div class="co-name-en">AQUARICH PROSPERITY PARTNER co.,ltd.</div>
+                
+                <div class="vat-row">
+                    លេខអត្តសញ្ញាណកម្ម អតប (VAT TIN) 
+                    <span class="vat-box">K</span><span class="vat-box">0</span><span class="vat-box">0</span><span class="vat-box">4</span><span class="vat-box">9</span><span class="vat-box">0</span><span class="vat-box">2</span><span class="vat-box">6</span><span class="vat-box">0</span><span class="vat-box">0</span><span class="vat-box">4</span><span class="vat-box">5</span><span class="vat-box">0</span>
+                </div>
+                
+                <div class="address-header">អាសយដ្ឋាន + #VTRUST TOWER ជាន់ទី៦ បន្ទប់លេខ 6C ជណ្តើរ A ផ្លូវ ១៦៩ សង្កាត់ វាលវង់ ខណ្ឌ7មករា រាជធានីភ្នំពេញ<br>លេខទូរស័ព្ទ : +៨៥៥៨១៨៦៩៣៧៩</div>
+            </div>
+        </div>
+
+        <div class="blue-divider"></div>
+
+        <div class="invoice-title">
+            <div style="font-size: 18px;">វិក្កយប័ត្រ</div>
+            <div style="font-size: 14px;">Invoice</div>
+        </div>
+
+        <div class="meta-container">
+            <div class="left-col">
+                <div class="row">
+                    <div class="label-block"><span>ឈ្មោះក្រុមហ៊ុនរឺអតិថិជន +</span><span>Company Name / Customer +</span></div>
+                    <div class="value-line" contenteditable="true">ASSEN</div>
+                </div>
+                <div class="row"><div class="label-block"><span>អាសយដ្ឋាន +</span><span>Address :</span></div><div class="value-line" contenteditable="true"></div></div>
+                <div class="row"><div class="label-block"><span>លេខទូរស័ព្ទ +</span><span>Telephone Number :</span></div><div class="value-line" contenteditable="true">089973778</div></div>
+            </div>
+            <div class="right-col">
+                <div class="row"><div class="label-block"><span>លេខរៀងវិក្កយប័ត្រ +</span><span>Invoice No :</span></div><div class="value-line" contenteditable="true">A-Q 0002</div></div>
+                <div class="row"><div class="label-block"><span>កាលបរិច្ឆេទ +</span><span>Date :</span></div><div class="value-line" contenteditable="true">10/02/2026</div></div>
+                <div class="row"><div class="label-block"><span>កាលបរិច្ឆេទត្រូវបង់ +</span><span>Due Date :</span></div><div class="value-line" contenteditable="true">10/02/2026</div></div>
+            </div>
+        </div>
+
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th width="8%">លរ<br>No.</th>
+                    <th width="50%">បរិយាយ<br>Description</th>
+                    <th width="14%">បរិមាណ<br>Quantity</th>
+                    <th width="14%">ថ្លៃឯកតា<br>Unit Price</th>
+                    <th width="14%">តម្លៃសរុប<br>Payment Customer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td contenteditable="true">1</td>
+                    <td class="desc-cell" contenteditable="true">50% of the "One Yuan Lucky Draw"</td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true">$</td>
+                    <td contenteditable="true">$ 20000 USD</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="bottom-row-container">
+            <div class="bank-info-cell" contenteditable="true">
+                <div style="text-decoration: underline; margin-bottom: 5px;">• Bank information</div>
+                Bank Name : ABA's Bank<br>
+                Account Name : XIE JIAFENG<br>
+                Account Number : 013362382
+            </div>
+            <div class="totals-area totals-column">
+                <div class="total-item">
+                    <div class="total-label" style="text-align: right;">
+                        <span>សរុបជាដុល្លា</span>
+                        <span>Grand Total USD</span>
+                    </div>
+                    <div class="total-value">
+                        <span>$</span>
+                        <span contenteditable="true">20000</span>
+                    </div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">
+                        <div class="rate-flex">
+                            <div style="display: flex; flex-direction: column; text-align: left;">
+                                <span style="font-size: 13px;">សរុបរួមជារៀល - អត្រា</span>
+                                <span>Grand Total in Riel - Rate</span>
+                            </div>
+                            <div style="font-size: 13px; margin-top: auto;" contenteditable="true">4,031</div>
+                        </div>
+                    </div>
+                    <div class="total-value">
+                        <span>KHR</span>
+                        <span contenteditable="true">80,620,000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="signature-section">
+            <div class="sig-block"><div class="sig-line"></div><div style="font-weight: bold;">ហត្ថលេខា និង ឈ្មោះអតិថិជន<br>Sign and name of customer</div></div>
+            <div class="sig-block"><div class="sig-line"></div><div style="font-weight: bold;">ហត្ថលេខា និង អ្នកធ្វើ<br>Sign and name of maker</div></div>
+        </div>
+
+        <div class="footer-info-container">
+            <div class="footer-row">
+                <div class="footer-left">
+                    <span style="color: #e91e63; font-size: 20px;">📍</span>
+                    <span style="font-weight: bold;">VTRUS Tower, 6 Floor, Street 169, Phum SangKat Veal Vong, Khan 7 Makara, Phnom Penh, Cambodia</span>
+                </div>
+                <div class="footer-right">
+                    <div class="contact-item">
+                        <span style="font-size: 16px;">✉️</span>
+                        <span style="text-decoration: underline;">infor@aquarichinvest.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <span style="color: #03a9f4; font-size: 16px;">🌐</span>
+                        <span style="text-decoration: underline;">https://aquarichinvest.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <span style="color: #e91e63; font-size: 16px;">📞</span>
+                        <span style="text-decoration: underline;">+85581869379</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
