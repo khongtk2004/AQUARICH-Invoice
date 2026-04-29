@@ -2,20 +2,26 @@
 <html lang="km">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="Aquarich.png">
     <title>Aquarich Invoice</title>
     <style>
+        /* CRITICAL: This section removes the URL, Date, and Page Title from PDF */
+        @page {
+            size: A4;
+            margin: 0; /* Setting margin to 0 removes browser headers/footers */
+        }
+
         body {
             font-family: 'Khmer OS Battambang', Arial, sans-serif;
             background: #525659;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             justify-content: center;
         }
-        .no-print { position: fixed; top: 10px; left: 10px; z-index: 100; padding: 10px 20px; cursor: pointer; }
+
         .invoice-container {
             width: 210mm;
+            min-height: 297mm; /* Forces A4 height */
             background: white;
             padding: 15mm;
             box-sizing: border-box;
@@ -30,17 +36,11 @@
         .header-section { display: flex; align-items: flex-start; margin-bottom: 5px; }
         .logo-box { width: 20%; text-align: left; }
         .logo-box img { width: 130px; height: auto; }
-        
-        /* Fixed: Increased width and removed large padding to keep VAT on one line */
-        .company-info { width: 80%; text-align: center; padding-right: 0px; }
-        
+        .company-info { width: 80%; text-align: center; }
         .co-name-kh { font-size: 18px; font-weight: bold; margin-bottom: 2px; }
         .co-name-en { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
-        
-        /* VAT Row Styling */
         .vat-row { font-weight: bold; margin-bottom: 8px; font-size: 13px; white-space: nowrap; }
         .vat-box { border: 1px solid #000; padding: 0 3px; margin: 0 1px; display: inline-block; min-width: 12px; text-align: center; }
-        
         .address-header { font-size: 11px; font-weight: bold; line-height: 1.4; }
 
         .blue-divider { border-bottom: 2px solid #1f4e78; margin: 10px 0; }
@@ -66,26 +66,30 @@
         .total-item:last-child { border-bottom: none; background-color: #f2f2f2; }
         .total-label { width: 66.5%; padding: 5px 10px; border-right: 1px solid #1f4e78; display: flex; flex-direction: column; justify-content: center; font-weight: bold; font-size: 11px; }
         .total-value { width: 33.5%; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 12px; }
-        .rate-flex { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 
-        /* SIGNATURES */
-        .signature-section { display: flex; justify-content: space-around; margin-top: 50px; margin-bottom: 40px; }
-        .sig-block { width: 250px; text-align: center; }
-        .sig-line { border-top: 1.2px solid #000; width: 100%; margin-bottom: 8px; }
+        /* FOOTER INFO */
+        .footer-info-container { margin-top: auto; border-top: 2px solid #1f4e78; padding-top: 15px; padding-bottom: 10px; }
+        .footer-row { display: flex; justify-content: space-between; font-size: 11px; }
 
-        /* FOOTER CONTACT INFO */
-        .footer-info-container { margin-top: auto; border-top: 2px solid #1f4e78; padding-top: 15px; }
-        .footer-row { display: flex; justify-content: space-between; align-items: flex-start; font-family: Arial, sans-serif; font-size: 13px; }
-        .footer-left { width: 60%; display: flex; align-items: flex-start; gap: 10px; }
-        .footer-right { width: 35%; display: flex; flex-direction: column; gap: 8px; }
-        .contact-item { display: flex; align-items: center; gap: 10px; text-decoration: none; color: black; }
-        
-        @media print { .no-print { display: none; } .invoice-container { box-shadow: none; margin: 0; } body { background: white; padding: 0; } }
+        .no-print { position: fixed; top: 10px; left: 10px; z-index: 100; padding: 10px 20px; cursor: pointer; background: #1f4e78; color: white; border: none; border-radius: 4px; font-weight: bold;}
+
+        /* PRINT SETTINGS */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .invoice-container { 
+                box-shadow: none; 
+                margin: 0; 
+                width: 210mm; 
+                height: 297mm; 
+                padding: 15mm;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <button class="no-print" onclick="window.print()">Print / Save PDF</button>
+    <button class="no-print" onclick="window.print()">Save as PDF</button>
 
     <div class="invoice-container">
         <div class="header-section">
@@ -93,12 +97,10 @@
             <div class="company-info">
                 <div class="co-name-kh">ក្រុមហ៊ុនអាហ្វ័ររីច ប្រស្នើរិធី ផាតន័រ ឯ.ក</div>
                 <div class="co-name-en">AQUARICH PROSPERITY PARTNER co.,ltd.</div>
-                
                 <div class="vat-row">
-                    លេខអត្តសញ្ញាណកម្ម អតប (VAT TIN) 
+                    លេខអត្តសញ្ញាណកម្ម អតប (VAT TIN)
                     <span class="vat-box">K</span><span class="vat-box">0</span><span class="vat-box">0</span><span class="vat-box">4</span><span class="vat-box">9</span><span class="vat-box">0</span><span class="vat-box">2</span><span class="vat-box">6</span><span class="vat-box">0</span><span class="vat-box">0</span><span class="vat-box">4</span><span class="vat-box">5</span><span class="vat-box">0</span>
                 </div>
-                
                 <div class="address-header">អាសយដ្ឋាន + #VTRUST TOWER ជាន់ទី៦ បន្ទប់លេខ 6C ជណ្តើរ A ផ្លូវ ១៦៩ សង្កាត់ វាលវង់ ខណ្ឌ7មករា រាជធានីភ្នំពេញ<br>លេខទូរស័ព្ទ : +៨៥៥៨១៨៦៩៣៧៩</div>
             </div>
         </div>
@@ -183,30 +185,18 @@
             </div>
         </div>
 
-        <div class="signature-section">
-            <div class="sig-block"><div class="sig-line"></div><div style="font-weight: bold;">ហត្ថលេខា និង ឈ្មោះអតិថិជន<br>Sign and name of customer</div></div>
-            <div class="sig-block"><div class="sig-line"></div><div style="font-weight: bold;">ហត្ថលេខា និង អ្នកធ្វើ<br>Sign and name of maker</div></div>
+        <div style="display: flex; justify-content: space-around; margin-top: 50px; margin-bottom: 40px;">
+            <div style="width: 250px; text-align: center;"><div style="border-top: 1.2px solid #000; margin-bottom: 8px;"></div><div style="font-weight: bold;">ហត្ថលេខា និង ឈ្មោះអតិថិជន<br>Sign and name of customer</div></div>
+            <div style="width: 250px; text-align: center;"><div style="border-top: 1.2px solid #000; margin-bottom: 8px;"></div><div style="font-weight: bold;">ហត្ថលេខា និង អ្នកធ្វើ<br>Sign and name of maker</div></div>
         </div>
 
         <div class="footer-info-container">
             <div class="footer-row">
-                <div class="footer-left">
-                    <span style="color: #e91e63; font-size: 20px;">📍</span>
-                    <span style="font-weight: bold;">VTRUS Tower, 6 Floor, Street 169, Phum SangKat Veal Vong, Khan 7 Makara, Phnom Penh, Cambodia</span>
-                </div>
-                <div class="footer-right">
-                    <div class="contact-item">
-                        <span style="font-size: 16px;">✉️</span>
-                        <span style="text-decoration: underline;">infor@aquarichinvest.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <span style="color: #03a9f4; font-size: 16px;">🌐</span>
-                        <span style="text-decoration: underline;">https://aquarichinvest.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <span style="color: #e91e63; font-size: 16px;">📞</span>
-                        <span style="text-decoration: underline;">+85581869379</span>
-                    </div>
+                <div style="width: 60%; font-weight: bold;">📍 VTRUS Tower, 6 Floor, Street 169, Phum SangKat Veal Vong, Khan 7 Makara, Phnom Penh, Cambodia</div>
+                <div style="width: 35%; text-align: right;">
+                    ✉️ infor@aquarichinvest.com<br>
+                    🌐 https://aquarichinvest.com<br>
+                    📞 +85581869379
                 </div>
             </div>
         </div>
